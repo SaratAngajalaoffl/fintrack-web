@@ -1,4 +1,4 @@
-/** Domain types for bank accounts (aligned with planned persistence; see docs/data-model.md). */
+/** Domain types for bank accounts (aligned with planned persistence; see docs/api/data-model.md in the meta-repo). */
 
 export type BankAccountType = "savings" | "current";
 
