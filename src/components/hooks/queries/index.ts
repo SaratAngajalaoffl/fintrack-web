@@ -1,5 +1,6 @@
 export { useMutateLogin } from "@/components/hooks/queries/use-mutate-login";
 export { useMutateSignup } from "@/components/hooks/queries/use-mutate-signup";
+export { useMutateBootstrap } from "@/components/hooks/queries/use-mutate-bootstrap";
 export { useMutateForgotPassword } from "@/components/hooks/queries/use-mutate-forgot-password";
 export { useMutateResetPassword } from "@/components/hooks/queries/use-mutate-reset-password";
 export { useMutateChangePassword } from "@/components/hooks/queries/use-mutate-change-password";

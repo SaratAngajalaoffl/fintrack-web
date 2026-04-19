@@ -3,6 +3,7 @@ export { UserProfileProvider, useUserProfile } from "./use-user-profile";
 export {
   useMutateLogin,
   useMutateSignup,
+  useMutateBootstrap,
   useMutateForgotPassword,
   useMutateResetPassword,
   useMutateChangePassword,

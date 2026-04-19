@@ -35,6 +35,7 @@ export {
   requestChangePasswordOtp,
   resetPasswordRequest,
   signupRequest,
+  bootstrapAdminRequest,
   updateUserProfileRequest,
   type AuthUser,
   type ForgotPasswordResponse,

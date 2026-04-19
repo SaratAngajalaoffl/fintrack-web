@@ -11,6 +11,7 @@ type UserProfileContextValue = {
     id: string;
     email: string;
     isApproved: boolean;
+    isAdmin?: boolean;
     name: string;
     preferredCurrency: SupportedCurrency;
   } | null;

@@ -1,3 +1,5 @@
+import { API_ORIGIN_LOCAL_DEV_DEFAULT } from "@/configs/api-local-default";
+
 const apiRoutes = {
   authSignup: {
     path: "/api/auth/signup",
@@ -10,6 +12,12 @@ const apiRoutes = {
   },
   authMe: {
     path: "/api/auth/me",
+  },
+  authBootstrapStatus: {
+    path: "/api/auth/bootstrap-status",
+  },
+  authBootstrap: {
+    path: "/api/auth/bootstrap",
   },
   authAccountData: {
     path: "/api/auth/account-data",
@@ -103,22 +111,32 @@ function resolveApiPath<T extends ApiRouteKey>(
 /**
  * Base URL for the Go HTTP API (no trailing slash).
  *
- * - **Browser:** `NEXT_PUBLIC_API_ORIGIN` only (baked into the client bundle).
- * - **Server:** prefers `API_ORIGIN`, then `NEXT_PUBLIC_API_ORIGIN` (e.g. Docker SSR can call `http://api:8080`).
+ * - **Browser:** always `""` so `getApiRoute()` uses same-origin paths (`/api/...`). Session
+ *   cookies must be scoped to the Next.js host; credentialed fetches to `NEXT_PUBLIC_API_ORIGIN`
+ *   would store `fintrack_session` on the API origin, which middleware and `getSession()` never see.
+ * - **Server / Edge middleware:** prefers `API_ORIGIN`, then `NEXT_PUBLIC_API_ORIGIN`, then in
+ *   **`NODE_ENV === "development"`** only, {@link API_ORIGIN_LOCAL_DEV_DEFAULT}.
  *
- * When this returns `""`, `getApiRoute()` produces same-origin paths like `/api/auth/login`. For split
- * stacks (Next + Go on different origins), set **`NEXT_PUBLIC_API_ORIGIN`** (and **`API_ORIGIN`** for
- * server/middleware) so **`middleware.ts`** and **`getSession()`** can reach **`GET /api/auth/me`** on the API.
- *
- * When set to an absolute URL (e.g. `http://127.0.0.1:8080`), rewrites are disabled — enable CORS on the API
- * (`CORS_ALLOWED_ORIGINS`) for credentialed `fetch`.
+ * **`next.config.ts`** rewrites `/api/*` to the Go API when `API_ORIGIN` or `NEXT_PUBLIC_API_ORIGIN`
+ * is set (or the dev default). In Docker, set **`API_ORIGIN=http://api:8000`** (or your service URL)
+ * so rewrites from the web container reach the API; the browser still calls `/api/*` on the app host.
  */
 export function getApiOrigin(): string {
-  const isServer = typeof window === "undefined";
-  const raw = isServer
-    ? (process.env.API_ORIGIN ?? process.env.NEXT_PUBLIC_API_ORIGIN)
-    : process.env.NEXT_PUBLIC_API_ORIGIN;
-  const u = typeof raw === "string" ? raw.trim().replace(/\/$/, "") : "";
+  if (typeof window !== "undefined") {
+    return "";
+  }
+
+  const raw = (
+    process.env.API_ORIGIN ??
+    process.env.NEXT_PUBLIC_API_ORIGIN ??
+    ""
+  )
+    .trim()
+    .replace(/\/$/, "");
+  let u = raw;
+  if (!u && process.env.NODE_ENV === "development") {
+    u = API_ORIGIN_LOCAL_DEV_DEFAULT;
+  }
   return u;
 }
 

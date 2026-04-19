@@ -1,5 +1,6 @@
 /**
- * Central place for auth-related path rules. Keep in sync with `src/middleware.ts` matcher.
+ * Central place for auth-related path rules. Middleware matcher is broad; keep
+ * `AUTH_PAGE_PATHS` aligned with session redirect behavior.
  */
 
 /** URL prefixes that require a valid session cookie (middleware + layouts). */
@@ -9,6 +10,7 @@ export const PROTECTED_PREFIXES = ["/dashboard"] as const;
 export const AUTH_PAGE_PATHS = [
   "/login",
   "/signup",
+  "/setup",
   "/forgot-password",
   "/reset-password",
 ] as const;

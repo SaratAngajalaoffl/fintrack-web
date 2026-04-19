@@ -15,6 +15,9 @@ const appRoutes = {
   signup: {
     path: "/signup",
   },
+  setup: {
+    path: "/setup",
+  },
   forgotPassword: {
     path: "/forgot-password",
   },

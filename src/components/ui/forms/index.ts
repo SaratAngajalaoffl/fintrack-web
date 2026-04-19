@@ -5,3 +5,4 @@ export { LoginForm } from "./login-form";
 export { PasswordResetOtpField } from "./password-reset-otp-field";
 export { ResetPasswordForm } from "./reset-password-form";
 export { SignupForm } from "./signup-form";
+export { InitialSetupForm } from "./initial-setup-form";

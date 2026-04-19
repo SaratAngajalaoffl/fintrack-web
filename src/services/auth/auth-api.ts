@@ -41,10 +41,31 @@ export async function signupRequest(payload: {
   return body;
 }
 
+export async function bootstrapAdminRequest(payload: {
+  name: string;
+  email: string;
+  password: string;
+  preferredCurrency: SupportedCurrency;
+}) {
+  const res = await fetch(getApiRoute("authBootstrap"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(payload),
+  });
+  const body = await readJson<ApiErrorBody>(res);
+  if (!res.ok) {
+    throw new Error(body.error ?? "Could not complete initial setup");
+  }
+  return body;
+}
+
 export type AuthUser = {
   id: string;
   email: string;
   isApproved: boolean;
+  /** Present when the API includes the admin flag (users migrated with `is_admin`). */
+  isAdmin?: boolean;
   name: string;
   preferredCurrency: SupportedCurrency;
 };
