@@ -11,6 +11,7 @@ export {
   useMutateLogout,
   useMutateDeleteAccount,
   useMutateExportAccountData,
+  useMutateImportAccountData,
   useGetBankAccounts,
   useGetCreditCards,
   useMutateCreateCreditCard,

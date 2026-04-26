@@ -8,6 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import {
   useMutateDeleteAccount,
   useMutateExportAccountData,
+  useMutateImportAccountData,
   useUserProfile,
 } from "@/components/hooks";
 import {
@@ -47,7 +48,9 @@ export function AccountSettingsForm() {
   const router = useRouter();
   const { user, isLoading, updateUserProfile } = useUserProfile();
   const exportAccountDataMutation = useMutateExportAccountData();
+  const importAccountDataMutation = useMutateImportAccountData();
   const deleteAccountMutation = useMutateDeleteAccount();
+  const importFileInputRef = React.useRef<HTMLInputElement | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
   const [greeting, setGreeting] = React.useState("Welcome");
 
@@ -127,6 +130,23 @@ export function AccountSettingsForm() {
       const message =
         error instanceof Error ? error.message : "Could not delete account";
       toast.error(message);
+    }
+  }
+
+  async function importData(file: File) {
+    try {
+      await importAccountDataMutation.mutateAsync(file);
+      toast.success("Data imported");
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Could not import account data";
+      toast.error(message);
+    } finally {
+      if (importFileInputRef.current) {
+        importFileInputRef.current.value = "";
+      }
     }
   }
 
@@ -216,7 +236,7 @@ export function AccountSettingsForm() {
             Data controls
           </CardTitle>
           <CardDescription className="leading-relaxed text-subtext-1">
-            Export your full account data or permanently delete your account.
+            Export your full account data, import from an export JSON (administrators only), or permanently delete your account.
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-6">
@@ -234,13 +254,43 @@ export function AccountSettingsForm() {
                 ? "Exporting..."
                 : "Export data"}
             </Button>
+            {user?.isAdmin ? (
+              <>
+                <input
+                  ref={importFileInputRef}
+                  type="file"
+                  accept="application/json,.json"
+                  className="hidden"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (!file) return;
+                    void importData(file);
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => importFileInputRef.current?.click()}
+                  disabled={
+                    importAccountDataMutation.isPending ||
+                    exportAccountDataMutation.isPending ||
+                    deleteAccountMutation.isPending
+                  }
+                >
+                  {importAccountDataMutation.isPending
+                    ? "Importing..."
+                    : "Import data"}
+                </Button>
+              </>
+            ) : null}
             <Button
               type="button"
               variant="destructive"
               onClick={() => void deleteAccount()}
               disabled={
                 deleteAccountMutation.isPending ||
-                exportAccountDataMutation.isPending
+                exportAccountDataMutation.isPending ||
+                importAccountDataMutation.isPending
               }
             >
               {deleteAccountMutation.isPending

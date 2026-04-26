@@ -199,3 +199,26 @@ export async function deleteAccountRequest() {
   }
   return body;
 }
+
+export async function importAccountDataRequest(file: File) {
+  const payloadText = await file.text();
+
+  let payload: unknown;
+  try {
+    payload = JSON.parse(payloadText) as unknown;
+  } catch {
+    throw new Error("Selected file is not valid JSON");
+  }
+
+  const res = await fetch(getApiRoute("authImportAccountData"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(payload),
+  });
+  const body = await readJson<ApiErrorBody>(res);
+  if (!res.ok) {
+    throw new Error(body.error ?? "Could not import account data");
+  }
+  return body;
+}

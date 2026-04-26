@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Github } from "@/components/icons";
 import { UserProfileMenu } from "@/components/ui/common/user-profile-menu";
+import { DashboardMobileNav } from "@/components/ui/layout/dashboard";
 import { Button } from "@/components/ui";
 import { getAppRoute } from "@/configs/app-routes";
 import { getSession } from "@/lib/auth/session";
@@ -31,20 +32,33 @@ export async function SiteHeader() {
           className="flex shrink-0 items-center gap-1 sm:gap-2"
           aria-label="Site and account"
         >
-          <Button variant="ghost" size="icon" asChild>
-            <a
-              href={GITHUB_REPO_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Fintrack on GitHub"
-            >
-              <Github />
-            </a>
-          </Button>
           {session ? (
-            <UserProfileMenu email={session.email} />
+            <>
+              <Button variant="ghost" size="icon" asChild>
+                <a
+                  href={GITHUB_REPO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Fintrack on GitHub"
+                >
+                  <Github />
+                </a>
+              </Button>
+              <UserProfileMenu email={session.email} />
+              <DashboardMobileNav email={session.email} />
+            </>
           ) : (
             <>
+              <Button variant="ghost" size="icon" asChild>
+                <a
+                  href={GITHUB_REPO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Fintrack on GitHub"
+                >
+                  <Github />
+                </a>
+              </Button>
               <Button variant="ghost" size="sm" asChild>
                 <Link href={getAppRoute("login")}>Log in</Link>
               </Button>

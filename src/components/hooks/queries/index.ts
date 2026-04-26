@@ -8,6 +8,7 @@ export { useMutateRequestChangePasswordOtp } from "@/components/hooks/queries/us
 export { useMutateLogout } from "@/components/hooks/queries/use-mutate-logout";
 export { useMutateDeleteAccount } from "@/components/hooks/queries/use-mutate-delete-account";
 export { useMutateExportAccountData } from "@/components/hooks/queries/use-mutate-export-account-data";
+export { useMutateImportAccountData } from "@/components/hooks/queries/use-mutate-import-account-data";
 export { useGetBankAccounts } from "@/components/hooks/queries/use-get-bank-accounts";
 export { useGetCreditCards } from "@/components/hooks/queries/use-get-credit-cards";
 export { useMutateCreateCreditCard } from "@/components/hooks/queries/use-mutate-create-credit-card";

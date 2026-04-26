@@ -3,7 +3,6 @@
 import { useGetBankAccounts } from "@/components/hooks";
 import { ShimmerComponent } from "@/components/ui";
 import { filterAndSortBankAccounts } from "@/lib/bank-accounts/list-state";
-import { bankAccountsSummary } from "@/lib/bank-accounts/mock-data";
 import type { BankAccountsListState } from "@/lib/bank-accounts/types";
 
 import { BankAccountsSummaryCards } from "./bank-accounts-summary-cards";
@@ -65,7 +64,17 @@ export function BankAccountsDataPanel({
   }
 
   const allAccounts = bankAccountsQuery.data ?? [];
-  const summary = bankAccountsSummary(allAccounts);
+  const summary = {
+    totalAccounts: allAccounts.length,
+    totalBalances: allAccounts.reduce(
+      (sum, account) => sum + account.balance,
+      0,
+    ),
+    totalBuckets: allAccounts.reduce(
+      (sum, account) => sum + account.bucketNames.length,
+      0,
+    ),
+  };
   const rows = filterAndSortBankAccounts(allAccounts, listState);
 
   return (

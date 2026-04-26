@@ -30,6 +30,7 @@ export {
   exportAccountDataRequest,
   forgotPasswordRequest,
   getCurrentUserRequest,
+  importAccountDataRequest,
   loginRequest,
   logoutRequest,
   requestChangePasswordOtp,

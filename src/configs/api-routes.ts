@@ -22,6 +22,9 @@ const apiRoutes = {
   authAccountData: {
     path: "/api/auth/account-data",
   },
+  authImportAccountData: {
+    path: "/api/auth/account-data/import",
+  },
   authForgotPassword: {
     path: "/api/auth/forgot-password",
   },

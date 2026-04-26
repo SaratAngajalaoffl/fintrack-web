@@ -3,7 +3,6 @@
 import { useGetFundBuckets } from "@/components/hooks";
 import { ShimmerComponent } from "@/components/ui";
 import { filterAndSortFundBuckets } from "@/lib/fund-buckets/list-state";
-import { fundBucketsSummary } from "@/lib/fund-buckets/mock-data";
 import type { FundBucketsListState } from "@/lib/fund-buckets/types";
 
 import { FundBucketsSummaryCards } from "./fund-buckets-summary-cards";
@@ -55,7 +54,15 @@ export function FundBucketsDataPanel({ listState }: FundBucketsDataPanelProps) {
   }
 
   const rows = fundBucketsQuery.data ?? [];
-  const summary = fundBucketsSummary(rows);
+  const summary = {
+    totalBuckets: rows.length,
+    totalLocked: rows
+      .filter((row) => row.isLocked)
+      .reduce((sum, row) => sum + row.currentValue, 0),
+    totalTarget: rows.reduce((sum, row) => sum + row.targetAmount, 0),
+    completedBuckets: rows.filter((row) => row.currentValue >= row.targetAmount)
+      .length,
+  };
   const filteredRows = filterAndSortFundBuckets(rows, listState);
 
   return (

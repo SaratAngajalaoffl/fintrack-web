@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Menu } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 import {
   Button,
@@ -24,19 +25,23 @@ type DashboardMobileNavProps = {
 
 export function DashboardMobileNav({ email }: DashboardMobileNavProps) {
   const [open, setOpen] = React.useState(false);
+  const pathname = usePathname();
+
+  if (!pathname.startsWith("/dashboard")) {
+    return null;
+  }
 
   return (
-    <div className="fixed top-18 right-4 z-30 md:hidden">
+    <div className="md:hidden">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="border-border/80 bg-surface-0/90 shadow-lg backdrop-blur-md"
             aria-label="Open dashboard menu"
           >
-            <Menu className="size-5" aria-hidden />
+            <Menu className="size-4" aria-hidden />
           </Button>
         </SheetTrigger>
         <SheetContent showCloseButton className="gap-6">

@@ -2,7 +2,6 @@
 
 import { useGetCreditCards, useGetExpenseCategories } from "@/components/hooks";
 import { ShimmerComponent } from "@/components/ui";
-import { creditCardsSummary } from "@/lib/credit-cards/mock-data";
 import { filterAndSortCreditCards } from "@/lib/credit-cards/list-state";
 import type { CreditCardsListState } from "@/lib/credit-cards/types";
 
@@ -64,7 +63,12 @@ export function CreditCardsDataPanel({ listState }: CreditCardsDataPanelProps) {
   }
 
   const rows = creditCardsQuery.data ?? [];
-  const summary = creditCardsSummary(rows);
+  const summary = {
+    numberOfCards: rows.length,
+    totalBalance: rows.reduce((sum, row) => sum + row.maxBalance, 0),
+    totalUsage: rows.reduce((sum, row) => sum + row.usedBalance, 0),
+    totalLocked: rows.reduce((sum, row) => sum + row.lockedBalance, 0),
+  };
   const filteredRows = filterAndSortCreditCards(rows, listState);
   const categories = Array.from(
     new Set(
