@@ -1,4 +1,4 @@
-import { API_ORIGIN_LOCAL_DEV_DEFAULT } from "@/configs/api-local-default";
+import { appConfig } from "./env";
 
 const apiRoutes = {
   authSignup: {
@@ -111,33 +111,21 @@ function resolveApiPath<T extends ApiRouteKey>(
 /**
  * Base URL for the Go HTTP API (no trailing slash).
  *
- * - **Browser:** always `""` so `getApiRoute()` uses same-origin paths (`/api/...`). Session
- *   cookies must be scoped to the Next.js host; credentialed fetches to `NEXT_PUBLIC_API_ORIGIN`
- *   would store `fintrack_session` on the API origin, which middleware and `getSession()` never see.
- * - **Server / Edge middleware:** prefers `API_ORIGIN`, then `NEXT_PUBLIC_API_ORIGIN`, then in
- *   **`NODE_ENV === "development"`** only, {@link API_ORIGIN_LOCAL_DEV_DEFAULT}.
+ * Always returns `""` so `getApiRoute()` yields same-origin `/api/...` paths in both browser and
+ * server runtimes. Next.js rewrites/proxy then forwards those requests to the Go API.
  *
- * **`next.config.ts`** rewrites `/api/*` to the Go API when `API_ORIGIN` or `NEXT_PUBLIC_API_ORIGIN`
- * is set (or the dev default). In Docker, set **`API_ORIGIN=http://api:8000`** (or your service URL)
+ * `API_ORIGIN` is consumed by `next.config.ts` rewrite resolution.
+ *
+ * **`next.config.ts`** rewrites `/api/*` to the Go API when `API_ORIGIN` is set. In Docker, set
+ * **`API_ORIGIN=http://api:8000`** (or your service URL)
  * so rewrites from the web container reach the API; the browser still calls `/api/*` on the app host.
  */
 export function getApiOrigin(): string {
-  if (typeof window !== "undefined") {
-    return "";
+  if (typeof window === "undefined") {
+    return appConfig.apiOrigin || "";
   }
 
-  const raw = (
-    process.env.API_ORIGIN ??
-    process.env.NEXT_PUBLIC_API_ORIGIN ??
-    ""
-  )
-    .trim()
-    .replace(/\/$/, "");
-  let u = raw;
-  if (!u && process.env.NODE_ENV === "development") {
-    u = API_ORIGIN_LOCAL_DEV_DEFAULT;
-  }
-  return u;
+  return "";
 }
 
 export const getApiRoute = <T extends ApiRouteKey>(

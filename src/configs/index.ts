@@ -2,9 +2,10 @@ export {
   default as appRoutes,
   getAppRoute,
   type AppRouteKey,
-} from "@/configs/app-routes";
+} from "./app-routes";
+export { appConfig } from "./env";
 export {
   default as apiRoutes,
   getApiRoute,
   type ApiRouteKey,
-} from "@/configs/api-routes";
+} from "./api-routes";

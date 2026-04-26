@@ -1,27 +1,12 @@
 import type { NextConfig } from "next";
 
-import { API_ORIGIN_LOCAL_DEV_DEFAULT } from "./src/configs/api-local-default";
-
-function resolveGoApiOriginForRewrites(): string {
-  const fromEnv = (
-    process.env.API_ORIGIN ??
-    process.env.NEXT_PUBLIC_API_ORIGIN ??
-    ""
-  )
-    .trim()
-    .replace(/\/$/, "");
-  if (fromEnv) return fromEnv;
-  if (process.env.NODE_ENV === "development") {
-    return API_ORIGIN_LOCAL_DEV_DEFAULT;
-  }
-  return "";
-}
+import { appConfig } from "./src/configs";
 
 const nextConfig: NextConfig = {
   output: "standalone",
   async rewrites() {
-    const base = resolveGoApiOriginForRewrites();
-    if (!base) return [];
+    const base = appConfig.apiOrigin;
+
     return [
       {
         source: "/api/:path*",

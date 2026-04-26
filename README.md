@@ -17,7 +17,7 @@ Frontend for [Fintrack](https://github.com/SaratAngajalaoffl/fintrack): personal
 ```bash
 npm install
 cp .env.example .env.local
-# Set NEXT_PUBLIC_API_ORIGIN (and optional API_ORIGIN) to your Go API base URL
+# Set API_ORIGIN to your Go API base URL
 npm run dev
 ```
 

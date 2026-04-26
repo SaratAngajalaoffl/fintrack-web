@@ -4,13 +4,6 @@ const appRoutes = {
   },
   login: {
     path: "/login",
-    create: (params?: { redirect?: string }) => {
-      if (!params?.redirect) return "/login";
-      const query = new URLSearchParams({
-        redirect: params.redirect,
-      });
-      return `/login?${query.toString()}`;
-    },
   },
   signup: {
     path: "/signup",
@@ -24,14 +17,26 @@ const appRoutes = {
   resetPassword: {
     path: "/reset-password",
   },
-  showcase: {
-    path: "/showcase",
-  },
   dashboard: {
     path: "/dashboard",
   },
-  dashboardIncome: {
-    path: "/dashboard/receivables/income",
+  dashboardAccountSettings: {
+    path: "/dashboard/account-settings",
+  },
+  dashboardChangePassword: {
+    path: "/dashboard/change-password",
+  },
+  dashboardBankAccounts: {
+    path: "/dashboard/bank-accounts/my-bank-accounts",
+  },
+  dashboardBankStatements: {
+    path: "/dashboard/bank-accounts/statements",
+  },
+  dashboardCreditCards: {
+    path: "/dashboard/credit-cards/my-credit-cards",
+  },
+  dashboardCreditCardBills: {
+    path: "/dashboard/credit-cards/bills",
   },
   dashboardExpenses: {
     path: "/dashboard/expenses/my-expenses",
@@ -42,23 +47,8 @@ const appRoutes = {
   dashboardExpenseLoans: {
     path: "/dashboard/expenses/loans",
   },
-  dashboardCreditCards: {
-    path: "/dashboard/credit-cards/my-credit-cards",
-  },
-  dashboardCreditCardBills: {
-    path: "/dashboard/credit-cards/bills",
-  },
-  dashboardChangePassword: {
-    path: "/dashboard/change-password",
-  },
-  dashboardAccountSettings: {
-    path: "/dashboard/account-settings",
-  },
-  dashboardBankAccounts: {
-    path: "/dashboard/bank-accounts/my-bank-accounts",
-  },
-  dashboardBankStatements: {
-    path: "/dashboard/bank-accounts/statements",
+  dashboardIncome: {
+    path: "/dashboard/receivables/income",
   },
   dashboardLending: {
     path: "/dashboard/receivables/lending",
@@ -99,10 +89,10 @@ type GetAppRouteArgs<T extends AppRouteKey> =
       ? [params?: AppRouteParams<T>]
       : [params: AppRouteParams<T>];
 
-export const getAppRoute = <T extends AppRouteKey>(
+function resolveAppPath<T extends AppRouteKey>(
   key: T,
   ...args: GetAppRouteArgs<T>
-): string => {
+): string {
   const route = appRoutes[key] as {
     path: string;
     create?: (params?: unknown) => string;
@@ -111,7 +101,12 @@ export const getAppRoute = <T extends AppRouteKey>(
     return route.create(args[0]);
   }
   return route.path;
-};
+}
+
+export const getAppRoute = <T extends AppRouteKey>(
+  key: T,
+  ...args: GetAppRouteArgs<T>
+): string => resolveAppPath(key, ...args);
 
 export type { AppRouteKey };
 export default appRoutes;
